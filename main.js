@@ -43,7 +43,7 @@ const canvas=$('game');canvas.addEventListener('pointerdown',e=>{if(!['intro','p
 let leverPointer=null,leverStart=null,leverLast=-1;const lever=$('lever');lever.addEventListener('pointerdown',e=>{e.preventDefault();leverPointer=e.pointerId;lever.setPointerCapture(e.pointerId);let r=lever.getBoundingClientRect();leverStart={x:e.clientX,y:e.clientY,cx:r.left+r.width/2,cy:r.top+r.height*.55};let b=e.target.closest('[data-pilot]');leverLast=b?Number(b.dataset.pilot):-1;if(b)shift(leverLast);});lever.addEventListener('pointermove',e=>{if(e.pointerId!==leverPointer)return;let dx=e.clientX-leverStart.x,dy=e.clientY-leverStart.y;if(Math.hypot(dx,dy)<18)return;let a=Math.atan2(dy,dx),pick=dy<-Math.abs(dx)*.55?1:dx<0?0:2;if(pick!==leverLast){leverLast=pick;shift(pick);}});function releaseLever(e){if(e.pointerId===leverPointer){leverPointer=null;leverStart=null;}}lever.addEventListener('pointerup',releaseLever);lever.addEventListener('pointercancel',releaseLever);document.querySelectorAll('.pilot-button').forEach(b=>b.addEventListener('click',()=>shift(Number(b.dataset.pilot))));
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();if(['playing','intro'].includes(game.state))pause();$('error').classList.remove('hidden');$('error-text').textContent='Graphics access was interrupted. Retry to restart the flight system.';});canvas.addEventListener('webglcontextrestored',()=>location.reload());window.addEventListener('resize',()=>view.resize());
 // Standard-mapping gamepad. Stick uses a radial dead zone rescaled to full range; the d-pad moves at full speed.
-// A / X / B (and Y) pick Kevo / M. / Daiga; LB cycles pilots; RB / RT focus; Start pauses, confirms menus, and skips the opening.
+// Fixed pilot buttons: X Kevo, A Daiga, B M. (the same button always selects the same pilot); LB cycles pilots; RB / RT focus; Start pauses, confirms menus, and skips the opening.
 let pad=null;
 function rumble(ms,strong,weak=strong){try{pad?.vibrationActuator?.playEffect('dual-rumble',{duration:ms,strongMagnitude:strong,weakMagnitude:weak});}catch{}}
 function gamepad(){let p;try{p=[...navigator.getGamepads()].find(g=>g&&g.connected);}catch{return;}pad=p||null;if(!p){padFocus=false;return;}const down=i=>!!p.buttons[i]?.pressed,hit=i=>down(i)&&!lastButtons[i];
@@ -53,7 +53,7 @@ function gamepad(){let p;try{p=[...navigator.getGamepads()].find(g=>g&&g.connect
  const menu=!$('overlay').classList.contains('hidden');
  if(menu){if(hit(0)||hit(9))$('overlay-primary').click();else if(hit(1)&&overlayKind==='help')$('overlay').classList.add('hidden');}
  else if(game.state==='title'){if(hit(0)||hit(9))start();}
- else{for(let [button,pilot]of [[0,0],[2,1],[3,1],[1,2]])if(hit(button))shift(pilot);if(hit(4))shift((game.pilot+1)%3);if(hit(9)||hit(8)){if(game.state==='intro'&&hit(9))game.skipIntro();else pause();}}
+ else{for(let [button,pilot]of [[2,0],[0,2],[1,1]])if(hit(button))shift(pilot);if(hit(4))shift((game.pilot+1)%3);if(hit(9)||hit(8)){if(game.state==='intro'&&hit(9))game.skipIntro();else pause();}}
  lastButtons=p.buttons.map(b=>b.pressed);}
 window.addEventListener('gamepadconnected',e=>{$('pad-status').textContent='CONTROLLER READY: '+(e.gamepad.id.split('(')[0].trim()||'GAMEPAD').slice(0,28).toUpperCase()+' / PRESS A OR START';$('pad-status').classList.remove('hidden');});
 window.addEventListener('gamepaddisconnected',()=>{$('pad-status').classList.add('hidden');if(['intro','playing'].includes(game.state))pause();});

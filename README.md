@@ -22,9 +22,9 @@ Then open **dist/index.html** in Chrome or Edge. It's a single self-contained fi
 | Action | Keyboard | Controller | Touch |
 | --- | --- | --- | --- |
 | Move | WASD / arrows | Left stick / d-pad | Drag the battlefield |
-| Kevo / blue | 1 | A | Tap Kevo or swipe the lever |
-| M. / white | 2 | X or Y | Tap M. or swipe the lever |
-| Daiga / red | 3 | B | Tap Daiga or swipe the lever |
+| Kevo / blue | 1 | X | Tap Kevo or swipe the lever |
+| M. / white | 2 | B | Tap M. or swipe the lever |
+| Daiga / red | 3 | A | Tap Daiga or swipe the lever |
 | Cycle pilot | | LB | |
 | Focus (half speed) | Hold Shift / Space | Hold RB / RT | |
 | Pause | Esc / P | Start / Back | Pause button |
