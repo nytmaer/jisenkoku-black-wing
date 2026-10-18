@@ -1,0 +1,45 @@
+{
+  "simulation_checks_passed": 9,
+  "maximum_projectiles": 650,
+  "simulation_stress_ms": {
+    "mean": 0.035,
+    "p95": 0.112
+  },
+  "portrait_viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "browser_renderer": "software fallback (test browser WebGL disabled)",
+  "boss_sample": {
+    "bullets": 27,
+    "frame_mean_ms": 16.6613,
+    "frame_p95_ms": 16.8,
+    "approx_fps": 60
+  },
+  "optimized_density_sample": {
+    "bullets": 650,
+    "frame_mean_ms": 18.744,
+    "frame_p95_ms": 33.304,
+    "approx_fps": 53.35
+  },
+  "browser_checks": [
+    "desktop title",
+    "launch",
+    "pointer movement",
+    "tap shift",
+    "lever swipe Kevo to M.",
+    "keyboard shift",
+    "pause overlay",
+    "portrait mixed patterns",
+    "portrait boss framing",
+    "portrait carrier pass"
+  ],
+  "not_hardware_verified": [
+    "WebGL path",
+    "physical phone multi-touch",
+    "haptics",
+    "gamepad",
+    "sustained mobile 60 FPS"
+  ],
+  "sources": "User prompt, supplied robot01.jpg, supplied dialogue script; all runtime art and audio original procedural; Three.js reused locally."
+}

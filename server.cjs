@@ -1,0 +1,3 @@
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+let args=process.argv.slice(2),i=args.indexOf('--port'),port=Number(i>=0?args[i+1]:process.env.PORT||4173);
+http.createServer((req,res)=>{let name=decodeURIComponent(req.url.split('?')[0]);if(name==='/'||name.endsWith('/index.html'))name='/index.html';let file=path.join(__dirname,'dist',name);if(!file.startsWith(path.join(__dirname,'dist')+path.sep)){res.writeHead(403);return res.end();}fs.readFile(file,(err,data)=>{if(err){res.writeHead(404);return res.end('Not found');}res.setHeader('Content-Type',name.endsWith('.html')?'text/html; charset=utf-8':'application/octet-stream');res.end(data);});}).listen(port,'0.0.0.0',()=>console.log('Offline game preview ready on '+port));

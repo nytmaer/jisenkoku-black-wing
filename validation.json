@@ -1,0 +1,26 @@
+{
+  "version": "2.0-fighter-art",
+  "supplied_images": 9,
+  "simulation_tests_passed": 9,
+  "browser_renderer": "software fallback",
+  "viewport": [
+    390,
+    844
+  ],
+  "verified": [
+    "image decode and background removal",
+    "all nine silhouettes reviewed",
+    "player fighter handoffs",
+    "fighter name HUD",
+    "enemy orientation and dimensional markers",
+    "title formation",
+    "portrait combat"
+  ],
+  "hardware_checks_remaining": [
+    "WebGL 2 rendering",
+    "physical mobile multi-touch",
+    "gamepad"
+  ],
+  "combat_simulation_changed": false,
+  "original_assets_modified": false
+}

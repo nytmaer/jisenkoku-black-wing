@@ -1,0 +1,15 @@
+{
+  "name": "jisenkoku-black-wing",
+  "version": "0.2.1",
+  "description": "Jisenkoku: The Black Wing. Mission 01, Freedom Fighters. An offline browser shoot-'em-up.",
+  "private": true,
+  "author": "Kenan Brack / Brackuro Studios",
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "node tests.cjs",
+    "dev": "node build.cjs && node server.cjs --port 4173"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
