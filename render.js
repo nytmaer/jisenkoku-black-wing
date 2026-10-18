@@ -1,7 +1,7 @@
 /* Procedural 2.5D battlefield. All geometry, textures, and effects are original. */
 (function(){
 'use strict';
-const T=THREE,COLORS=[0x47cfff,0xf4efff,0xff4563,0xffaf48],DARK=0x111e36;
+const T=THREE,COLORS=[0x4a7dff,0xffffff,0xff4563,0xffaf48],DARK=0x111e36;
 const matCache=new Map();
 function mat(color,emissive=false){let key=color+':'+emissive;if(!matCache.has(key))matCache.set(key,emissive?new T.MeshBasicMaterial({color}):new T.MeshToonMaterial({color}));return matCache.get(key);}
 const boxGeo=new T.BoxGeometry(1,1,1),sphereGeo=new T.IcosahedronGeometry(1,1);
@@ -35,18 +35,19 @@ class Scene {
   // Enemy bullets are drawn in four layers above everything else: soft glow, dark rim,
   // colored body, white core. The visible body is larger than the damage radius.
   const layer=(geo,material,count,order)=>{material.transparent=true;material.depthTest=false;material.depthWrite=false;let p=new T.InstancedMesh(geo,material,count);p.renderOrder=order;return p;};
-  const disc=new T.CircleGeometry(1,20),diamond=new T.CircleGeometry(1,4);
-  this.bulletGlow=layer(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:glowMap,transparent:true,blending:T.AdditiveBlending,opacity:.75}),850,20);
-  this.bulletRim=layer(disc,new T.MeshBasicMaterial({color:0x060c18,transparent:true,opacity:.85}),850,21);
-  this.bulletPool=layer(disc,new T.MeshBasicMaterial({color:0xffffff}),700,22);
-  this.neutralPool=layer(diamond,new T.MeshBasicMaterial({color:0xffffff}),150,22);
-  this.bulletCore=layer(disc,new T.MeshBasicMaterial({color:0xffffff}),850,23);
-  this.neutralRim=layer(diamond,new T.MeshBasicMaterial({color:0x060c18,transparent:true,opacity:.9}),150,21);
+  // Each dimension color has its own silhouette so it reads by shape as well as hue:
+  // blue = round orb, white = needle along its path, red = spinning six-point star, orange = hazard diamond.
+  const shape=pts=>{let sh=new T.Shape();pts.forEach(([x,y],i)=>i?sh.lineTo(x,y):sh.moveTo(x,y));sh.closePath();return new T.ShapeGeometry(sh);};
+  const star=[];for(let i=0;i<12;i++){let a=i*Math.PI/6+Math.PI/2,r=i%2?.5:1;star.push([Math.cos(a)*r,Math.sin(a)*r]);}
+  this.bulletShapes=[new T.CircleGeometry(1,24),shape([[0,1.75],[.5,0],[0,-1.75],[-.5,0]]),shape(star),new T.CircleGeometry(1,4)];
+  this.bulletGlow=layer(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:glowMap,transparent:true,blending:T.AdditiveBlending,opacity:.8}),850,20);
+  this.bulletSets=this.bulletShapes.map(geo=>({rim:layer(geo,new T.MeshBasicMaterial({color:0x050a14,transparent:true,opacity:.9}),700,21),body:layer(geo,new T.MeshBasicMaterial({color:0xffffff}),700,22),core:layer(geo,new T.MeshBasicMaterial({color:0xffffff}),700,23)}));
+  this.bulletPools=[this.bulletGlow,...this.bulletSets.flatMap(b=>[b.rim,b.body,b.core])];
   // Player shots are translucent and sit under enemy bullets so they never hide a threat.
   this.shotPool=layer(boxGeo,new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.62,blending:T.AdditiveBlending}),260,12);
   this.particlePool=layer(boxGeo,new T.MeshBasicMaterial({color:0xffffff,transparent:true,blending:T.AdditiveBlending}),600,15);
   this.itemPool=layer(new T.OctahedronGeometry(1),new T.MeshBasicMaterial({color:0xffffff}),400,18);
-  for(let p of [this.bulletGlow,this.bulletRim,this.bulletPool,this.neutralRim,this.neutralPool,this.bulletCore,this.shotPool,this.particlePool,this.itemPool]){p.instanceMatrix.setUsage(T.DynamicDrawUsage);p.frustumCulled=false;p.count=0;this.scene.add(p);}
+  for(let p of [...this.bulletPools,this.shotPool,this.particlePool,this.itemPool]){p.instanceMatrix.setUsage(T.DynamicDrawUsage);p.frustumCulled=false;p.count=0;this.scene.add(p);}
   this.ringPool=[];const ringGeo=new T.RingGeometry(.86,1,48);for(let i=0;i<24;i++){let m=new T.Mesh(ringGeo,new T.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,blending:T.AdditiveBlending,depthTest:false,depthWrite:false,side:T.DoubleSide}));m.renderOrder=16;m.visible=false;this.scene.add(m);this.ringPool.push(m);}
  }
  makeWorld(){this.fleet=[];for(let i=0;i<7;i++){let g=carrier();g.scale.setScalar(.4+(i%3)*.14);g.position.set((i%2?1:-1)*(10+(i%3)*6),i*13-35,-2);g.rotation.z=.12*(i%3-1);this.scene.add(g);this.fleet.push(g);}this.bigCarrier=carrier();this.bigCarrier.scale.setScalar(1.75);this.bigCarrier.position.set(13,10,-2.7);this.bigCarrier.rotation.z=-.12;this.scene.add(this.bigCarrier);this.smoke=[];for(let i=0;i<45;i++){let m=new T.Mesh(sphereGeo,new T.MeshBasicMaterial({color:i%4?0x273846:0x5a686e,transparent:true,opacity:.25,depthWrite:false}));m.scale.setScalar(.45+(i%7)*.19);m.position.set(12+Math.sin(i)*1.2,5+(i%15)*.5,-1+(i%15)*.25);this.scene.add(m);this.smoke.push(m);}this.clouds=[];for(let i=0;i<14;i++){let g=new T.Group();for(let j=0;j<5;j++){let m=new T.Mesh(sphereGeo,new T.MeshBasicMaterial({color:0xa4c5cd,transparent:true,opacity:.045,depthWrite:false}));m.scale.set(2+j%3,1.1, .3);m.position.set(j*1.5,Math.sin(j),0);g.add(m);}g.position.set((i%2?1:-1)*(7+i%4*5),i*7-40,1+(i%3));this.scene.add(g);this.clouds.push(g);}this.distant=[];for(let i=0;i<15;i++){let f=supportFighter();f.scale.setScalar(.28);f.position.set(-20+i*3,18+i%4*4,-2);this.scene.add(f);this.distant.push(f);}this.trails=[];for(let i=0;i<3;i++){let m=new T.Mesh(new T.PlaneGeometry(.09,5),new T.MeshBasicMaterial({color:COLORS[i],transparent:true,opacity:.18,depthWrite:false,blending:T.AdditiveBlending}));this.scene.add(m);this.trails.push(m);}this.tear=new T.Mesh(new T.TorusGeometry(4,.09,6,80),new T.MeshBasicMaterial({color:0xc65392,transparent:true,opacity:.75,depthWrite:false}));this.tear.position.set(0,9,-1);this.scene.add(this.tear);}
@@ -65,12 +66,17 @@ class Scene {
  this.ring.visible=this.hitbox.visible=!title&&!intro&&game.state!=='dead';this.ring.position.set(p.x,p.y,.62);this.ring.material.color.setHex(COLORS[active]);this.ring.rotation.z=t;let pulse=1+Math.max(0,.3-game.shiftAge)*3;this.ring.scale.setScalar(pulse);this.ring.material.opacity=game.focus?.7:.45;this.hitbox.position.set(p.x,p.y,.87);this.hitbox.scale.setScalar(game.focus?1.5+Math.sin(t*20)*.1:1);this.hitbox.renderOrder=24;
  const alive=new Set();for(let e of game.enemies){alive.add(e.id);let obj=this.objects.get(e.id);if(!obj){obj=enemyModel(e.type,e.color);this.scene.add(obj);this.objects.set(e.id,obj);}obj.position.set(e.x,e.y,.55);obj.rotation.z=e.heading||0;obj.rotation.y=Math.sin(e.age*2)*.12;obj.userData.signal.scale.setScalar(.7+e.telegraph*1.3);obj.userData.signal.material.opacity=.65+e.telegraph*.35;obj.userData.flashMesh.material.opacity=e.flash>0?.85:0;}for(let [id,obj] of this.objects)if(!alive.has(id)){this.scene.remove(obj);obj.traverse(n=>{if(n.geometry&&n.geometry!==boxGeo&&n.geometry!==sphereGeo&&!n.userData.flash)n.geometry.dispose();if(n.isSprite||n.userData.flash||n.geometry?.type==='RingGeometry')n.material.dispose();});this.objects.delete(id);}
  // Bullets pop in from 40% size over their first 0.1 s so new fire reads as a muzzle event.
- const GLOW=[0x47cfff,0xb9a8ff,0xff4563,0xffaf48];let bi=0,ni=0,gi=0;for(let b of game.bullets){let grow=Math.min(1,.4+b.age*6),r=b.r*1.55*grow,ry=b.color===1?r*1.3:r;if(gi<850){this.instance(this.bulletGlow,gi,b.x,b.y,.7,r*4.2,ry*4.2,1,GLOW[b.color]);gi++;}if(b.color===3){if(ni>=150)continue;let rot=t*4+b.id;this.instance(this.neutralRim,ni,b.x,b.y,.7,r*1.5,r*1.5,1,0xffffff,rot);this.instance(this.neutralPool,ni,b.x,b.y,.7,r*1.15,r*1.15,1,COLORS[3],rot);ni++;continue;}if(bi>=700)continue;let ang=b.color===1?Math.atan2(b.vy,b.vx)+Math.PI/2:0;this.instance(this.bulletRim,bi,b.x,b.y,.7,r*1.28,ry*1.28,1,0xffffff,ang);this.instance(this.bulletPool,bi,b.x,b.y,.7,r,ry,1,COLORS[b.color],ang);this.instance(this.bulletCore,bi,b.x,b.y,.7,r*.5,ry*.5,1,0xffffff,ang);bi++;}
- this.bulletGlow.count=gi;this.bulletRim.count=this.bulletPool.count=this.bulletCore.count=bi;this.neutralRim.count=this.neutralPool.count=ni;
+ // Bullets pop in from 40% size over their first 0.1 s so new fire reads as a muzzle event.
+ const GLOW=[0x2f62ff,0xe6eeff,0xff2440,0xffaf48],CORE=[0xd8e4ff,0xffffff,0xffe1e5,0xfff3d6],n=[0,0,0,0];let gi=0;
+ for(let b of game.bullets){let c=b.color,set=this.bulletSets[c],i=n[c];if(i>=700)continue;n[c]++;let r=b.r*1.55*Math.min(1,.4+b.age*6),rot=0,sx=r,sy=r,glow=4.2;
+  if(c===1){rot=Math.atan2(b.vy,b.vx)-Math.PI/2;sx=sy=r*1.05;glow=3.6;}else if(c===2){rot=t*5+b.id;sx=sy=r*1.3;}else if(c===3){rot=t*4+b.id;sx=sy=r*1.2;}
+  if(gi<850){this.instance(this.bulletGlow,gi++,b.x,b.y,.7,r*glow,r*glow,1,GLOW[c]);}
+  this.instance(set.rim,i,b.x,b.y,.7,sx*1.32,sy*1.32,1,0xffffff,rot);this.instance(set.body,i,b.x,b.y,.7,sx,sy,1,COLORS[c],rot);this.instance(set.core,i,b.x,b.y,.7,sx*(c===0?.45:.42),sy*(c===0?.45:.42),1,CORE[c],rot);}
+ this.bulletGlow.count=gi;this.bulletSets.forEach((set,c)=>{set.rim.count=set.body.count=set.core.count=n[c];});
  let si=0;for(let s of game.shots){if(si>=260)break;this.instance(this.shotPool,si++,s.x,s.y,.62,s.color===2?.13:.07,s.color===2?.58:.48,.06,COLORS[s.color]);}this.shotPool.count=si;
  let pi=0;for(let p of game.particles){if(pi>=600)break;let size=.075*(p.life/p.max)+.02;this.instance(this.particlePool,pi++,p.x,p.y,.8,size,size*2,size,COLORS[p.color],t*3);}this.particlePool.count=pi;
  let ii=0;for(let it of game.items){if(ii>=400)break;let s=.13+Math.sin(t*14+ii)*.02;this.dummy.position.set(it.x,it.y,.75);this.dummy.rotation.set(t*3,t*4+ii,0);this.dummy.scale.set(s,s*1.4,s);this.dummy.updateMatrix();this.itemPool.setMatrixAt(ii,this.dummy.matrix);this.itemPool.setColorAt(ii,this.color.setHex(ii%3?0xffd45a:0xfff4c2));ii++;}this.itemPool.count=ii;
- for(let pool of [this.bulletGlow,this.bulletRim,this.bulletPool,this.neutralRim,this.neutralPool,this.bulletCore,this.shotPool,this.particlePool,this.itemPool]){pool.instanceMatrix.needsUpdate=true;if(pool.instanceColor)pool.instanceColor.needsUpdate=true;}
+ for(let pool of [...this.bulletPools,this.shotPool,this.particlePool,this.itemPool]){pool.instanceMatrix.needsUpdate=true;if(pool.instanceColor)pool.instanceColor.needsUpdate=true;}
  this.ringPool.forEach((m,i)=>{let r=game.rings[i];m.visible=!!r;if(!r)return;let k=1-r.life/r.max,s=r.size*(.25+k*.85);m.position.set(r.x,r.y,.85);m.scale.setScalar(s);m.material.color.setHex(COLORS[r.color]);m.material.opacity=(1-k)*.9;});
  for(let i=0;i<this.fleet.length;i++){let f=this.fleet[i];f.position.y-=dt*1.4;if(f.position.y<-48)f.position.y=46;}
  this.bigCarrier.position.x=13-dive*9;this.bigCarrier.position.y=dive>0?24-(game.time-177)*.9:8;this.bigCarrier.rotation.z=-.12-dive*.18;
