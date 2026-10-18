@@ -3,6 +3,8 @@
 
 An offline browser shoot-'em-up from Brackuro Studios. Three pilots share one formation and switch dimensions on the fly. Fly into bullets that match your color to cancel them, and dodge every other color.
 
+**Play in the browser:** https://nytmaer.github.io/jisenkoku-black-wing/ (rebuilt and redeployed automatically on every push to `main`)
+
 ## Quick start
 
 Requires [Node.js](https://nodejs.org) 18 or newer. There are no npm dependencies; Three.js r169 is vendored in `vendor/`.
@@ -13,7 +15,7 @@ npm run build
 
 Then open **dist/index.html** in Chrome or Edge. It's a single self-contained file that runs offline with no server. The first launch takes a few seconds while it prepares the nine embedded fighter images.
 
-`dist/` is generated and not committed. To share a playable build, attach `dist/index.html` to a GitHub Release.
+`dist/` is generated and not committed. `.github/workflows/pages.yml` builds it in CI and publishes it to GitHub Pages.
 
 ## Controls
 
