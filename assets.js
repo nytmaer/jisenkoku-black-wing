@@ -5,7 +5,7 @@
 const defs={
  beta:{file:'Beta_Blue.png',label:'Beta Blue',height:2.8,anchor:.59,exhaust:[[-.39,-1.06],[.39,-1.06]]},
  wendigo:{file:'Wendigo_White.png',label:'Wendigo White',whiten:true,height:2.8,anchor:.59,exhaust:[[-.29,-.95],[.29,-.95]]},
- revo:{file:'Revo_Red.png',label:'Revo Red',height:2.8,anchor:.59,exhaust:[[-.31,-1.05],[.31,-1.05]]},
+ revo:{file:'Revo_Red.png',label:'Revo Red',redden:true,height:2.8,anchor:.59,exhaust:[[-.31,-1.05],[.31,-1.05]]},
  support:{file:'3211c563-b201-4b4f-87ab-579848f408de.png',label:'Allied support fighter',height:2.65,anchor:.59},
  interceptor:{file:'990e9330-82bc-48bb-b4bd-c3b8bfe9fd0e.png',label:'Dark interceptor',height:2.15,anchor:.55},
  neutralDrone:{file:'Neutral Drone.png',label:'Neutral Drone',height:1.7,anchor:.55},
@@ -32,6 +32,10 @@ function matte(img,def){
  // Wendigo's supplied paint is a teal gray. Lift its mid and light tones toward a cool white while
  // leaving the dark ink lines and panel shading intact; the saturated yellow core crystal is untouched.
  if(def.whiten)for(let i=0;i<n;i++){if(!keep[i])continue;let j=i*4,r=rgba[j],g=rgba[j+1],b=rgba[j+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);if(r>140&&g>120&&b<110&&mx-mn>70)continue;let l=.299*r+.587*g+.114*b,k=l<28?0:l>95?1:(l-28)/67,v=l+(255-l)*.6*k*k*(3-2*k);rgba[j]=r*.08+v*.92*.96;rgba[j+1]=g*.08+v*.92*.985;rgba[j+2]=b*.08+v*.92;}
+ // Revo's supplied armor is painted green. Rotate green hues to crimson, keeping each pixel's lightness
+ // and shading; ink lines, grays, and the existing red / orange accents are left alone.
+ if(def.redden)for(let i=0;i<n;i++){if(!keep[i])continue;let j=i*4,r=rgba[j]/255,g=rgba[j+1]/255,b=rgba[j+2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,l=(mx+mn)/2;if(d<.04)continue;let sat=d/(1-Math.abs(2*l-1)),h=mx===r?((g-b)/d+6)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<55||h>185)continue;
+  let nh=(353+(h-115)*.1+360)%360,ns=Math.min(1,sat*1.75+.18),nl=Math.min(.62,l*1.06),c=(1-Math.abs(2*nl-1))*ns,x=c*(1-Math.abs((nh/60)%2-1)),m=nl-c/2,k=Math.floor(nh/60),rr=[c,x,0,0,x,c][k],gg=[x,c,c,x,0,0][k],bb=[0,0,x,c,c,x][k];rgba[j]=(rr+m)*255;rgba[j+1]=(gg+m)*255;rgba[j+2]=(bb+m)*255;}
  ctx.putImageData(data,0,0);
  const pad=3,cw=x1-x0+1+pad*2,ch=y1-y0+1+pad*2,scale=Math.min(1,768/Math.max(cw,ch)),out=document.createElement('canvas');out.width=Math.round(cw*scale);out.height=Math.round(ch*scale);let o=out.getContext('2d');o.imageSmoothingQuality='high';o.drawImage(canvas,x0,y0,x1-x0+1,y1-y0+1,pad*scale,pad*scale,(cw-pad*2)*scale,(ch-pad*2)*scale);
  return {canvas:out,bounds:{x:x0,y:y0,width:x1-x0+1,height:y1-y0+1},sourceWidth:w,sourceHeight:h,foregroundPixels:largest.length,usedSourceAlpha:hasAlpha};

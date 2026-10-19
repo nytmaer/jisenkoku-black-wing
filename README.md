@@ -82,7 +82,7 @@ This build integrates all nine supplied PNGs. Original uploads are retained unch
 | --- | --- |
 | Beta_Blue.png | M., blue shift state |
 | Wendigo_White.png | Daiga, white shift state; brightened at load from its teal-gray paint |
-| Revo_Red.png | Kevo, red shift state; supplied green armor retained |
+| Revo_Red.png | Kevo, red shift state; green armor recolored to crimson at load |
 | 3211c563-b201-4b4f-87ab-579848f408de.png | Allied support fighter in distant formations |
 | 990e9330-82bc-48bb-b4bd-c3b8bfe9fd0e.png | Enemy lancer / dark interceptor |
 | Neutral Drone.png | Enemy scout artwork for blue and white attack states |

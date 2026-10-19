@@ -1,7 +1,7 @@
 /* Jisenkoku: Black Wing. Original mission simulation. No runtime dependencies. */
 (function(root){
 'use strict';
-const PILOTS=[{name:'KEVO',color:'#ff4563',speed:8.8,rate:.095,damage:2},{name:'M.',color:'#4a7dff',speed:8.2,rate:.14,damage:1.7},{name:'DAIGA',color:'#ffffff',speed:7.7,rate:.19,damage:4.5}];
+const PILOTS=[{name:'KEVO',color:'#ff4563',speed:10.6,rate:.095,damage:2},{name:'M.',color:'#4a7dff',speed:9.8,rate:.14,damage:1.7},{name:'DAIGA',color:'#ffffff',speed:9.2,rate:.19,damage:4.5}];
 const PHASES=[{at:0,name:'FLIGHT',jp:'出撃',hint:'Fly. Fire. Find your rhythm.'},{at:27,name:'DIMENSION CONTACT',jp:'次元接触',hint:'Match a bullet’s color to cancel it.'},{at:67,name:'ALTERNATING PRESSURE',jp:'交代戦闘',hint:'Red: Kevo · Blue: M. · White: Daiga'},{at:119,name:'CROSS FIRE',jp:'十字砲火',hint:'Orange threats must be dodged.'},{at:177,name:'CARRIER DIVE',jp:'空母降下',hint:'Follow the channel. Keep the formation moving.'},{at:231,name:'DIMENSION BREACH',jp:'次元突破',hint:'Destroy the assault frame.'}];
 const FOCUS=.5,SCREEN={x:7.4,top:11.5,bottom:-4};
 
