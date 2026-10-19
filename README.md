@@ -92,7 +92,7 @@ This build integrates all nine supplied PNGs. Original uploads are retained unch
 
 These faction assignments are implementation choices for this pass. They can be changed in `assets.js` without repainting the artwork. The filenames do not by themselves establish story canon or cancellation rules. Colored markers continue to identify each enemy's attack state.
 
-Friendly noses point forward. Enemy fighters are rotated to face into the playfield. All three hero images use a shared 2.8-world-unit length and a common anchor while preserving their individual proportions. Kevo's broad wings, Wendigo's compact silhouette, and Revo's slender hull remain distinct. Continuous firing, bank animation, handoff movement, damage reaction, and cancel fields continue to work.
+Friendly noses point forward. Enemy fighters are rotated to face into the playfield. All three hero images use a shared 2.8-world-unit length and a common anchor while preserving their individual proportions. M.'s broad-winged Beta Blue, Daiga's compact Wendigo White, and Kevo's slender Revo Red remain distinct. Continuous firing, bank animation, handoff movement, damage reaction, and cancel fields continue to work.
 
 The WebGL path uses the supplied illustrations on transparent planes within the existing 3D battlefield. The software fallback uses the same prepared artwork. This is a sprite integration pass. The new illustrations have not been reconstructed as volumetric ship models. Parked aircraft on the carrier and the mission boss retain the Version 1 procedural models. Daiga's opening figure and the portrait placeholders also remain from Version 1; his standing position now aligns with Revo's cockpit.
 
@@ -101,7 +101,7 @@ The WebGL path uses the supplied illustrations on transparent planes within the 
 - All nine supplied images were decoded and inspected together against a checkerboard background.
 - The transparency pass was corrected to preserve gray armor and clear the Red Drone's enclosed green background regions.
 - The title formation and 390 × 844 portrait combat were inspected in the software renderer.
-- Kevo / Beta Blue, M. / Wendigo White, and Daiga / Revo Red were selected in combat; the HUD updated to each fighter name.
+- Each pilot was selected in combat and the HUD updated to their fighter name (current mapping: Kevo / Revo Red, M. / Beta Blue, Daiga / Wendigo White).
 - All nine existing simulation checks pass, including shifting, firing while moving, color cancellation, collisions, death / reset, the complete mission timeline, boss phases, turret destruction, and victory.
 - The complete standalone JavaScript parses, and all nine PNGs are embedded in the HTML.
 

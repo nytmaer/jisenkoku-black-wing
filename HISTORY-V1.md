@@ -1,3 +1,5 @@
+> **Historical (Version 1).** Pilot colors have since changed: Kevo is now red (Revo Red), M. is blue (Beta Blue), and Daiga is white (Wendigo White). See README.md for current controls.
+
 # Jisenkoku: Black Wing
 
 **Mission 01: Freedom Fighters**
@@ -17,9 +19,9 @@ The authored escalation reaches the boss at 3:51. Defeating it and completing th
 | Action | Keyboard | Pointer / touch | Gamepad |
 | --- | --- | --- | --- |
 | Move | WASD / arrows | Drag the battlefield; movement is relative to your starting touch | Left stick |
-| Kevo / blue | 1 | Tap Kevo or swipe down-left on the lever | A |
-| M. / white | 2 | Tap M. or swipe up on the lever | X |
-| Daiga / red | 3 | Tap Daiga or swipe down-right on the lever | B |
+| Kevo (V1: blue, now red) | 1 | Tap Kevo or swipe down-left on the lever | A |
+| M. (V1: white, now blue) | 2 | Tap M. or swipe up on the lever | X |
+| Daiga (V1: red, now white) | 3 | Tap Daiga or swipe down-right on the lever | B |
 | Fire | Automatic | Automatic | Automatic |
 | Pause | P / Esc | Pause button | Start |
 | Skip opening | Enter during opening | Opening lasts eight seconds | — |
