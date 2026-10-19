@@ -22,9 +22,9 @@ Then open **dist/index.html** in Chrome or Edge. It's a single self-contained fi
 | Action | Keyboard | Controller | Touch |
 | --- | --- | --- | --- |
 | Move | WASD / arrows | Left stick / d-pad | Drag the battlefield |
-| Kevo / blue | 1 | X | Tap Kevo or swipe the lever |
-| M. / white | 2 | B | Tap M. or swipe the lever |
-| Daiga / red | 3 | A | Tap Daiga or swipe the lever |
+| Kevo / red (Revo Red) | 1 | X | Tap Kevo or swipe the lever |
+| M. / blue (Beta Blue) | 2 | B | Tap M. or swipe the lever |
+| Daiga / white (Wendigo White) | 3 | A | Tap Daiga or swipe the lever |
 | Cycle pilot | | LB | |
 | Focus (half speed) | Hold Shift / Space | Hold RB / RT | |
 | Pause | Esc / P | Start / Back | Pause button |
@@ -61,6 +61,7 @@ QA fixtures (disabled in a normal launch): `?qa=art`, `?qa=title`, `?qa=mixed`, 
 
 ## Version 2.1: polish pass
 
+- **Pilots and ships.** Kevo flies Revo Red (red), M. flies Beta Blue (blue), and Daiga flies Wendigo White (white). Each pilot cancels bullets of their ship's color. Bullet shapes follow color: red six-point star, blue orb, white needle, orange diamond (dodge only).
 - **Authored stage.** `SCRIPT` in `core.js` replaces the procedural wave formula with 54 hand-timed waves: curved swoops, drop-and-hold formations, and side sweeps. Runs are deterministic. Heavies retreat upward, small craft peel off to the sides, enemies face their direction of travel, and nothing fires from off screen or from below the player.
 - **Bullet readability.** Enemy bullets draw above everything as four layers: glow, dark rim, colored body, white core. The visible body is 1.55× the damage radius, and new bullets pop in from 40% size. Player shots are translucent and draw under enemy fire.
 - **Feedback.** Enemies and the boss flash on hit. Kills spawn shockwave rings and score popups. Grazes throw sparks.
@@ -69,7 +70,7 @@ QA fixtures (disabled in a normal launch): `?qa=art`, `?qa=title`, `?qa=mixed`, 
 - **Fairness.** Taking a hit erases bullets within 2.8 units of the hitbox.
 - **Focus mode.** Hold Shift or Space (gamepad RB / RT) for half-speed flight with an enlarged hitbox marker.
 - **Presentation.** Section banners carry Japanese headings (第一区画 出撃 …). The boss arrival shows a striped red WARNING band. The boss bar sits along the top edge. The results screen tallies max chain, grazes, kills, item bonus, hull bonus, and clear bonus.
-- Added M. and Daiga radio cues for when white and red enemies first appear.
+- Added M. and Daiga radio cues for when blue and white enemies first appear.
 - Full controller flow: d-pad, menus and restart, Start skips the opening, LB cycles pilots, rumble, and connect / disconnect handling.
 - The build is now a Node script (`build.cjs`), so no Python is needed.
 
@@ -79,9 +80,9 @@ This build integrates all nine supplied PNGs. Original uploads are retained unch
 
 | Supplied artwork | Current V2 assignment |
 | --- | --- |
-| Beta_Blue.png | Kevo, blue shift state |
-| Wendigo_White.png | M., white shift state |
-| Revo_Red.png | Daiga, red shift state; supplied green armor retained |
+| Beta_Blue.png | M., blue shift state |
+| Wendigo_White.png | Daiga, white shift state; brightened at load from its teal-gray paint |
+| Revo_Red.png | Kevo, red shift state; supplied green armor retained |
 | 3211c563-b201-4b4f-87ab-579848f408de.png | Allied support fighter in distant formations |
 | 990e9330-82bc-48bb-b4bd-c3b8bfe9fd0e.png | Enemy lancer / dark interceptor |
 | Neutral Drone.png | Enemy scout artwork for blue and white attack states |

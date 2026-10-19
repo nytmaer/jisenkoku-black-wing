@@ -43,9 +43,9 @@ Send the **BPM** of each loop if you know it. I'll line section changes up with 
 | `shot_kevo.wav` | 0.05–0.10 s | Plays several times a second. Short, light, not fatiguing. Focused twin shots. |
 | `shot_m.wav` | 0.05–0.10 s | Same constraints. Softer and wider, for the spread shot. |
 | `shot_daiga.wav` | 0.08–0.15 s | Heavier cannon thump, still short. |
-| `shift_kevo.wav` | 0.2–0.4 s | Dimension shift into blue. Sharp, bright. |
-| `shift_m.wav` | 0.2–0.4 s | Shift into white. Shimmering, crystalline. |
-| `shift_daiga.wav` | 0.2–0.4 s | Shift into red. Low, aggressive. |
+| `shift_kevo.wav` | 0.2–0.4 s | Dimension shift into red (Revo Red). Sharp, aggressive. |
+| `shift_m.wav` | 0.2–0.4 s | Shift into blue (Beta Blue). Bright, shimmering. |
+| `shift_daiga.wav` | 0.2–0.4 s | Shift into white (Wendigo White). Low, heavy. |
 | `cancel_1..3.wav` ×3 | 0.08–0.2 s | Absorbing a matching bullet. Satisfying high chime. Plays a lot, so keep it gentle. |
 | `graze.wav` | 0.03–0.08 s | Bullet brushing past. Tiny tick or scrape. Very quiet. |
 | `hit.wav` | 0.3–0.6 s | Taking damage. Alarm-like crunch. Must cut through everything. |

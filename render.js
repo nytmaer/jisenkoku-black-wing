@@ -1,7 +1,7 @@
 /* Procedural 2.5D battlefield. All geometry, textures, and effects are original. */
 (function(){
 'use strict';
-const T=THREE,COLORS=[0x4a7dff,0xffffff,0xff4563,0xffaf48],DARK=0x111e36;
+const T=THREE,COLORS=[0xff4563,0x4a7dff,0xffffff,0xffaf48],DARK=0x111e36;
 const matCache=new Map();
 function mat(color,emissive=false){let key=color+':'+emissive;if(!matCache.has(key))matCache.set(key,emissive?new T.MeshBasicMaterial({color}):new T.MeshToonMaterial({color}));return matCache.get(key);}
 const boxGeo=new T.BoxGeometry(1,1,1),sphereGeo=new T.IcosahedronGeometry(1,1);
@@ -36,10 +36,10 @@ class Scene {
   // colored body, white core. The visible body is larger than the damage radius.
   const layer=(geo,material,count,order)=>{material.transparent=true;material.depthTest=false;material.depthWrite=false;let p=new T.InstancedMesh(geo,material,count);p.renderOrder=order;return p;};
   // Each dimension color has its own silhouette so it reads by shape as well as hue:
-  // blue = round orb, white = needle along its path, red = spinning six-point star, orange = hazard diamond.
+  // red (Kevo) = spinning six-point star, blue (M.) = round orb, white (Daiga) = needle along its path, orange = hazard diamond.
   const shape=pts=>{let sh=new T.Shape();pts.forEach(([x,y],i)=>i?sh.lineTo(x,y):sh.moveTo(x,y));sh.closePath();return new T.ShapeGeometry(sh);};
   const star=[];for(let i=0;i<12;i++){let a=i*Math.PI/6+Math.PI/2,r=i%2?.5:1;star.push([Math.cos(a)*r,Math.sin(a)*r]);}
-  this.bulletShapes=[new T.CircleGeometry(1,24),shape([[0,1.75],[.5,0],[0,-1.75],[-.5,0]]),shape(star),new T.CircleGeometry(1,4)];
+  this.bulletShapes=[shape(star),new T.CircleGeometry(1,24),shape([[0,1.75],[.5,0],[0,-1.75],[-.5,0]]),new T.CircleGeometry(1,4)];
   this.bulletGlow=layer(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:glowMap,transparent:true,blending:T.AdditiveBlending,opacity:.8}),850,20);
   this.bulletSets=this.bulletShapes.map(geo=>({rim:layer(geo,new T.MeshBasicMaterial({color:0x050a14,transparent:true,opacity:.9}),700,21),body:layer(geo,new T.MeshBasicMaterial({color:0xffffff}),700,22),core:layer(geo,new T.MeshBasicMaterial({color:0xffffff}),700,23)}));
   this.bulletPools=[this.bulletGlow,...this.bulletSets.flatMap(b=>[b.rim,b.body,b.core])];
@@ -67,11 +67,11 @@ class Scene {
  const alive=new Set();for(let e of game.enemies){alive.add(e.id);let obj=this.objects.get(e.id);if(!obj){obj=enemyModel(e.type,e.color);this.scene.add(obj);this.objects.set(e.id,obj);}obj.position.set(e.x,e.y,.55);obj.rotation.z=e.heading||0;obj.rotation.y=Math.sin(e.age*2)*.12;obj.userData.signal.scale.setScalar(.7+e.telegraph*1.3);obj.userData.signal.material.opacity=.65+e.telegraph*.35;obj.userData.flashMesh.material.opacity=e.flash>0?.85:0;}for(let [id,obj] of this.objects)if(!alive.has(id)){this.scene.remove(obj);obj.traverse(n=>{if(n.geometry&&n.geometry!==boxGeo&&n.geometry!==sphereGeo&&!n.userData.flash)n.geometry.dispose();if(n.isSprite||n.userData.flash||n.geometry?.type==='RingGeometry')n.material.dispose();});this.objects.delete(id);}
  // Bullets pop in from 40% size over their first 0.1 s so new fire reads as a muzzle event.
  // Bullets pop in from 40% size over their first 0.1 s so new fire reads as a muzzle event.
- const GLOW=[0x2f62ff,0xe6eeff,0xff2440,0xffaf48],CORE=[0xd8e4ff,0xffffff,0xffe1e5,0xfff3d6],n=[0,0,0,0];let gi=0;
+ const GLOW=[0xff2440,0x2f62ff,0xe6eeff,0xffaf48],CORE=[0xffe1e5,0xd8e4ff,0xffffff,0xfff3d6],n=[0,0,0,0];let gi=0;
  for(let b of game.bullets){let c=b.color,set=this.bulletSets[c],i=n[c];if(i>=700)continue;n[c]++;let r=b.r*1.55*Math.min(1,.4+b.age*6),rot=0,sx=r,sy=r,glow=4.2;
-  if(c===1){rot=Math.atan2(b.vy,b.vx)-Math.PI/2;sx=sy=r*1.05;glow=3.6;}else if(c===2){rot=t*5+b.id;sx=sy=r*1.3;}else if(c===3){rot=t*4+b.id;sx=sy=r*1.2;}
+  if(c===2){rot=Math.atan2(b.vy,b.vx)-Math.PI/2;sx=sy=r*1.05;glow=3.6;}else if(c===0){rot=t*5+b.id;sx=sy=r*1.3;}else if(c===3){rot=t*4+b.id;sx=sy=r*1.2;}
   if(gi<850){this.instance(this.bulletGlow,gi++,b.x,b.y,.7,r*glow,r*glow,1,GLOW[c]);}
-  this.instance(set.rim,i,b.x,b.y,.7,sx*1.32,sy*1.32,1,0xffffff,rot);this.instance(set.body,i,b.x,b.y,.7,sx,sy,1,COLORS[c],rot);this.instance(set.core,i,b.x,b.y,.7,sx*(c===0?.45:.42),sy*(c===0?.45:.42),1,CORE[c],rot);}
+  this.instance(set.rim,i,b.x,b.y,.7,sx*1.32,sy*1.32,1,0xffffff,rot);this.instance(set.body,i,b.x,b.y,.7,sx,sy,1,COLORS[c],rot);this.instance(set.core,i,b.x,b.y,.7,sx*(c===1?.45:.42),sy*(c===1?.45:.42),1,CORE[c],rot);}
  this.bulletGlow.count=gi;this.bulletSets.forEach((set,c)=>{set.rim.count=set.body.count=set.core.count=n[c];});
  let si=0;for(let s of game.shots){if(si>=260)break;this.instance(this.shotPool,si++,s.x,s.y,.62,s.color===2?.13:.07,s.color===2?.58:.48,.06,COLORS[s.color]);}this.shotPool.count=si;
  let pi=0;for(let p of game.particles){if(pi>=600)break;let size=.075*(p.life/p.max)+.02;this.instance(this.particlePool,pi++,p.x,p.y,.8,size,size*2,size,COLORS[p.color],t*3);}this.particlePool.count=pi;
